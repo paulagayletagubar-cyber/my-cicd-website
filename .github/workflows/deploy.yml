@@ -33,6 +33,6 @@ jobs:
         with:
           path: '.'    # path: Specifies which folder to compress ('.' refers to the repository root directory)
 
-      # Step 4: Take the uploaded artifact and publish it live on the web via GitHub Pages
+      
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4

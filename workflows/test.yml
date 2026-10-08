@@ -1,0 +1,36 @@
+# name: The display title of your workflow visible in the GitHub Actions tab
+name: CI Test Suite
+
+# on: Specifies the trigger events that automatically start this workflow
+on:
+  push:
+    branches: [ "main" ] # Trigger every time code is pushed directly to main
+  pull_request:
+    branches: [ "main" ] # Trigger whenever a Pull Request targeting main is opened or updated
+
+# jobs: A collection of automated tasks that run when the workflow is triggered
+jobs:
+  # validate-code: A custom identifier/name for this specific job
+  validate-code:
+    # runs-on: Specifies the virtual machine (runner) OS provided by GitHub to execute commands
+    runs-on: ubuntu-24.04
+
+    # steps: The sequential list of tasks performed inside this job from top to bottom
+    steps:
+      # uses: Pulls a pre-built reusable Action from GitHub Marketplace
+      # actions/checkout@v5 clones/downloads your repository files onto the runner machine
+      - name: Checkout Code
+        uses: actions/checkout@v5
+
+      # run: Executes standard shell commands on the virtual machine runner
+      - name: Verify HTML File Exists
+        run: |
+          if [ -f "index.html" ]; then
+            echo "SUCCESS: index.html found."
+          else
+            echo "ERROR: index.html is missing!" && exit 1
+          fi
+
+      - name: Basic Syntax & Structure Check
+        run: |
+          grep -iq "<html" index.html && echo "HTML validated." || (echo "Invalid HTML structure" && exit 1)

@@ -13,9 +13,19 @@ permissions:
   pages: write         # Grants permission to modify and publish files to GitHub Pages
   id-token: write      # Generates an OpenID Connect (OIDC) token to securely prove the job's identity to GitHub Pages
 
+# concurrency: Ensures only one deployment runs at a time to prevent race conditions
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
 # jobs: Defines the deployment execution process
 jobs:
   deploy:
+    # Deploy to the default github-pages environment and capture the output URL
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
     # Environment: Executes inside a clean, hosted Ubuntu Linux virtual machine
     runs-on: ubuntu-24.04
 
@@ -37,4 +47,5 @@ jobs:
 
       # Step 4: Take the uploaded artifact and publish it live on the web via GitHub Pages
       - name: Deploy to GitHub Pages
+        id: deployment
         uses: actions/deploy-pages@v4

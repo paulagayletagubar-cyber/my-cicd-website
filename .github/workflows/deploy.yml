@@ -1,39 +1,30 @@
 
-# name: The display title for the deployment pipeline in GitHub Actions
 name: CD Web Deployment Pipeline
 
-# on: Triggers this workflow when code is pushed to the main branch
 on:
   push:
     branches: ["main"]
 
-# permissions: Sets the security permissions for GitHub Actions
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# jobs: Defines the deployment process
 jobs:
   deploy:
-    # Runs the deployment on an Ubuntu Linux virtual machine
     runs-on: ubuntu-24.04
 
     steps:
-      # Step 1: Download the repository source code
       - name: Checkout Repository Code
         uses: actions/checkout@v5
 
-      # Step 2: Configure GitHub Pages
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v4
 
-      # Step 3: Upload the website files as an artifact
       - name: Upload Artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: '.'
 
-      # Step 4: Deploy the website to GitHub Pages
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4

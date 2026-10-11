@@ -1,51 +1,39 @@
+
 # name: The display title for the deployment pipeline in GitHub Actions
 name: CD Web Deployment Pipeline
 
-# on: Triggers this workflow on pushes to main (e.g., after pull requests are merged or code is pushed)
+# on: Triggers this workflow when code is pushed to the main branch
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
 
-# permissions: Explicitly sets security access controls granted to the automatically generated GITHUB_TOKEN
-# Without these, GitHub Actions cannot publish content to GitHub Pages on your behalf
+# permissions: Sets the security permissions for GitHub Actions
 permissions:
-  contents: read      # Allows the runner to read and clone repository files
-  pages: write         # Grants permission to modify and publish files to GitHub Pages
-  id-token: write      # Generates an OpenID Connect (OIDC) token to securely prove the job's identity to GitHub Pages
+  contents: read
+  pages: write
+  id-token: write
 
-# concurrency: Ensures only one deployment runs at a time to prevent race conditions
-concurrency:
-  group: "pages"
-  cancel-in-progress: true
-
-# jobs: Defines the deployment execution process
+# jobs: Defines the deployment process
 jobs:
   deploy:
-    # Deploy to the default github-pages environment and capture the output URL
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    
-    # Environment: Executes inside a clean, hosted Ubuntu Linux virtual machine
+    # Runs the deployment on an Ubuntu Linux virtual machine
     runs-on: ubuntu-24.04
 
     steps:
-      # Step 1: Download repository source code onto the runner
+      # Step 1: Download the repository source code
       - name: Checkout Repository Code
         uses: actions/checkout@v5
 
-      # Step 2: Configure environment settings specific to GitHub Pages deployment
+      # Step 2: Configure GitHub Pages
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v4
 
-      # Step 3: Package site files into a downloadable deployment zip (called an artifact)
+      # Step 3: Upload the website files as an artifact
       - name: Upload Artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # path: Specifies which folder to compress ('.' refers to the repository root directory)
           path: '.'
 
-      # Step 4: Take the uploaded artifact and publish it live on the web via GitHub Pages
+      # Step 4: Deploy the website to GitHub Pages
       - name: Deploy to GitHub Pages
-        id: deployment
         uses: actions/deploy-pages@v4

@@ -19,11 +19,7 @@ permissions:
 jobs:
   deploy:
     # Required for deploy-pages so the deployment is tied to the github-pages environment
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
 
-    # runs-on: Executes inside a clean, hosted Ubuntu Linux virtual machine
     runs-on: ubuntu-24.04
 
     steps:

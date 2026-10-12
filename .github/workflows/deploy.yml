@@ -1,24 +1,31 @@
 # name: The display title for the deployment pipeline in GitHub Actions
 name: CD Web Deployment Pipeline
 
-# on: Triggers this workflow on pushes to main (e.g., after pull requests are merged or code is pushed)
+# on: Triggers this workflow on pushes to main (e.g., after pull requests are merged
+# or code is pushed)
 on:
   push:
     branches: [ "main" ]
 
-# permissions: Explicitly sets security access controls granted to the automatically generated GITHUB_TOKEN
-# Without these, GitHub Actions cannot publish content to GitHub Pages on your behalf
+# permissions: Explicitly sets security access controls granted to the automatically
+# generated GITHUB_TOKEN. Without these, GitHub Actions cannot publish content to
+# GitHub Pages on your behalf
 permissions:
-  contents: read      # Allows the runner to read and clone repository files
-  pages: write         # Grants permission to modify and publish files to GitHub Pages
-  id-token: write      # Generates an OpenID Connect (OIDC) token to securely prove the job's identity to GitHub Pages
+  contents: read    # Allows the runner to read and clone repository files
+  pages: write      # Grants permission to modify and publish files to GitHub Pages
+  id-token: write   # Generates an OIDC token to securely prove the job's identity to GitHub Pages
 
 # jobs: Defines the deployment execution process
 jobs:
   deploy:
-    # Environment: Executes inside a clean, hosted Ubuntu Linux virtual machine
+    # Required for deploy-pages so the deployment is tied to the github-pages environment
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    # runs-on: Executes inside a clean, hosted Ubuntu Linux virtual machine
     runs-on: ubuntu-24.04
-    
+
     steps:
       # Step 1: Download repository source code onto the runner
       - name: Checkout Repository Code
@@ -32,8 +39,10 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.' # path: Specifies which folder to compress ('.' refers to the repository root directory)
+          # path: Specifies which folder to compress ('.' refers to the repository root)
+          path: '.'
 
       # Step 4: Take the uploaded artifact and publish it live on the web via GitHub Pages
       - name: Deploy to GitHub Pages
+        id: deployment
         uses: actions/deploy-pages@v4

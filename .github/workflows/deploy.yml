@@ -32,10 +32,10 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Specifies the folder to upload
           path: '.'
 
       # Step 4: Deploy the website to GitHub Pages
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+          
